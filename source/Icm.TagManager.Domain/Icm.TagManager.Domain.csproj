@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="FileMetadata.cs" />
     <Compile Include="IMetadataRepository.cs" />
+    <Compile Include="IPathNormalizer.cs" />
     <Compile Include="IService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service.cs" />

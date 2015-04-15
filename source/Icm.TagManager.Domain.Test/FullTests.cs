@@ -12,13 +12,14 @@ namespace Icm.TagManager.Domain.Test
         public async Task UseCase()
         {
             IMetadataRepository repo = new MongoMetadataRepository("mongodb://localhost", "test_tagmanager");
-            var service = new Service(repo);
+            IPathNormalizer normalizer = new FileSystemPathNormalizer();
+            var service = new Service(repo, normalizer);
             string tempPath = CreateTempFile();
             string[] expectedTags = {"tag test 1", "tag 2"};
             await service.AddTagsToFileAsync(tempPath, expectedTags);
 
             repo = new MongoMetadataRepository("mongodb://localhost", "test_tagmanager");
-            service = new Service(repo);
+            service = new Service(repo, normalizer);
 
             FileMetadata metadata = await service.GetMetadataAsync(tempPath);
 

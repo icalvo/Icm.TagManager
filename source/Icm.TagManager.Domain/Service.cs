@@ -5,39 +5,44 @@ namespace Icm.TagManager.Domain
     public class Service : IService
     {
         private readonly IMetadataRepository _repository;
+        private readonly IPathNormalizer _normalizer;
 
-        public Service(IMetadataRepository repository)
+        public Service(IMetadataRepository repository, IPathNormalizer normalizer)
         {
             _repository = repository;
+            _normalizer = normalizer;
         }
 
         public async Task AddTagsToFileAsync(string path, params string[] tags)
         {
-            FileMetadata metadata = await _repository.GetByPathAsync(path);
+            var normalizedPath = _normalizer.Normalize(path);
+            var metadata = await _repository.GetByPathAsync(normalizedPath);
 
-            foreach (string tag in tags)
+            foreach (var tag in tags)
             {
                 metadata.AddTag(tag);
             }
 
-            await _repository.SaveAsync(path, metadata);
+            await _repository.SaveAsync(normalizedPath, metadata);
         }
 
         public async Task RemoveTagsFromFileAsync(string path, params string[] tags)
         {
-            FileMetadata metadata = await _repository.GetByPathAsync(path);
+            var normalizedPath = _normalizer.Normalize(path);
+            var metadata = await _repository.GetByPathAsync(normalizedPath);
 
-            foreach (string tag in tags)
+            foreach (var tag in tags)
             {
                 metadata.RemoveTag(tag);
             }
 
-            await _repository.SaveAsync(path, metadata);
+            await _repository.SaveAsync(normalizedPath, metadata);
         }
 
-        public async Task<FileMetadata> GetMetadataAsync(string tempPath)
+        public async Task<FileMetadata> GetMetadataAsync(string path)
         {
-            return await _repository.GetByPathAsync(tempPath);
+            var normalizedPath = _normalizer.Normalize(path);
+            return await _repository.GetByPathAsync(normalizedPath);
         }
     }
 }

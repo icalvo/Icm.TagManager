@@ -9,7 +9,8 @@ namespace Icm.TagManager.CommandLine
         private static void Main(string[] args)
         {
             var metadataRepository = new MongoMetadataRepository("mongodb://localhost", "tagmanager");
-            var service = new Service(metadataRepository);
+            var normalizer = new FileSystemPathNormalizer();
+            var service = new Service(metadataRepository, normalizer);
             var application = new Application(service);
             Parser.RunConsole(args, application);
         }

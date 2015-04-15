@@ -7,15 +7,20 @@ namespace Icm.TagManager.Domain
     public class FileMetadata
     {
         private readonly HashSet<string> _tags;
+        private string _path;
 
-        public FileMetadata(string path)
+        public FileMetadata(string path) : this(path, Enumerable.Empty<string>())
         {
             Path = path;
-            _tags = new HashSet<string>();
+        }
+
+        public FileMetadata(string path, params string[] tags) : this(path, tags.AsEnumerable())
+        {
         }
 
         public FileMetadata(string path, IEnumerable<string> tags)
         {
+            if (tags == null) throw new ArgumentNullException("tags");
             Path = path;
             _tags = new HashSet<string>(tags.Select(x => x.ToLowerInvariant()));
         }
@@ -27,7 +32,19 @@ namespace Icm.TagManager.Domain
             get { return _tags; }
         }
 
-        public string Path { get; private set; }
+        public string Path
+        {
+            get { return _path; }
+            private set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", "Path cannot be null");
+                }
+
+                _path = value;
+            }
+        }
 
         public void AddTag(string tag)
         {
