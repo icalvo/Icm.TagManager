@@ -20,17 +20,12 @@ namespace Icm.TagManager.Domain
 
         public FileMetadata(string path, IEnumerable<string> tags)
         {
-            if (tags == null) throw new ArgumentNullException("tags");
+            if (tags == null) throw new ArgumentNullException(nameof(tags));
             Path = path;
             _tags = new HashSet<string>(tags.Select(x => x.ToLowerInvariant()));
         }
-
-        public Guid Id { get; set; }
-
-        public IEnumerable<string> Tags
-        {
-            get { return _tags; }
-        }
+        
+        public IEnumerable<string> Tags => _tags;
 
         public string Path
         {
@@ -39,7 +34,7 @@ namespace Icm.TagManager.Domain
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException("value", "Path cannot be null");
+                    throw new ArgumentNullException(nameof(value), "Path cannot be null");
                 }
 
                 _path = value;
@@ -50,10 +45,10 @@ namespace Icm.TagManager.Domain
         {
             if (tag == null)
             {
-                throw new ArgumentNullException("tag");
+                throw new ArgumentNullException(nameof(tag));
             }
 
-            _tags.Add(tag.ToLowerInvariant());
+            _tags.Add(tag.Trim().ToLowerInvariant());
         }
 
         public void RemoveTag(string tag)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CLAP;
 using Icm.TagManager.Domain;
 
@@ -13,24 +14,43 @@ namespace Icm.TagManager.CommandLine
             _service = service;
         }
 
-        [Verb]
-        public void Add(string path, string[] tags)
+        [Verb(Description = "Add new tag to file")]
+        public async Task Add(
+            [Description("Path of the file to which the tags will be added")]string path,
+            [Description("List of tags")]string[] tags)
         {
-            _service.AddTagsToFileAsync(path, tags).Wait();
+            await _service.AddTagsToFileAsync(path, tags);
         }
 
         [Verb]
-        public void Show(string path)
+        public async Task Show(string path)
         {
-            var metadata = _service.GetMetadataAsync(path).Result;
+            var metadata = await _service.GetMetadataAsync(path);
 
             Console.WriteLine("Tags: {0}", string.Join(", ", metadata.Tags));
         }
 
         [Verb]
-        public void Remove(string path, string[] tags)
+        public async Task Remove(string path, string[] tags)
         {
-            _service.RemoveTagsFromFileAsync(path, tags).Wait();
+            await _service.RemoveTagsFromFileAsync(path, tags);
+        }
+
+        [Error]
+        public void HandleError(ExceptionContext context)
+        {
+            var aggregate = context.Exception as AggregateException;
+            if (aggregate != null)
+            {
+                foreach (var exception in aggregate.InnerExceptions)
+                {
+                    Console.WriteLine(exception.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine(context.Exception.Message);
+            }
         }
     }
 }

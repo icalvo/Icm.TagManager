@@ -7,5 +7,7 @@ namespace Icm.TagManager.Domain
         Task<FileMetadata> GetByPathAsync(string path);
 
         Task SaveAsync(string path, FileMetadata metadata);
+
+        Task WipeAllAsync();
     }
 }

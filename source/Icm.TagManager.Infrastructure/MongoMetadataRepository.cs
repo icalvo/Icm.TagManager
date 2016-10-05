@@ -51,5 +51,10 @@ namespace Icm.TagManager.Infrastructure
         {
             await _collection.ReplaceOneAsync(x => x.Path == path, metadata, new UpdateOptions {IsUpsert = true});
         }
+
+        public Task WipeAllAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
